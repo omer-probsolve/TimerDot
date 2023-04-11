@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Click the Dot</title>
+	<style>
+		#dot {
+			position: absolute;
+			top: 50%;
+			left: 50%;
+			transform: translate(-50%, -50%);
+			width: 90px;
+			height: 90px;
+			border-radius: 50%;
+			background-color: red;
+			cursor: pointer;
+		}
+	</style>
+</head>
+<body>
+	<h1>Click the Dot!</h1>
+	<p>Click the dot as many times as possible in one minute.</p>
+	<p id="score">Score: 0</p>
+	<div id="dot"></div>
+	<script>
+		let score = 0;
+		let timeLeft = 60;
+		let isFirstClick = true;
+		const dot = document.querySelector('#dot');
+		const scoreDisplay = document.querySelector('#score');
+		const timerDisplay = document.createElement('p');
+		const message = document.createElement('p');
+		message.textContent = 'Click the red dot to start the game!';
+		message.style.textAlign = 'center';
+		document.body.appendChild(message);
+		document.body.appendChild(timerDisplay);
+		
+		const moveDot = () => {
+			const randomX = Math.floor(Math.random() * (window.innerWidth - dot.offsetWidth));
+			const randomY = Math.floor(Math.random() * (window.innerHeight - dot.offsetHeight));
+			dot.style.top = randomY + 'px';
+			dot.style.left = randomX + 'px';
+			dot.addEventListener('click', incrementScore);
+		};
+		
+		const incrementScore = () => {
+			if (isFirstClick) {
+				isFirstClick = false;
+				message.style.display = 'none';
+				setInterval(moveDot, 1000);
+				const countdown = setInterval(() => {
+					timeLeft--;
+					timerDisplay.textContent = `Time Left: ${timeLeft}`;
+					if (timeLeft === 0) {
+						clearInterval(countdown);
+						dot.removeEventListener('click', incrementScore);
+						dot.style.display = 'none';
+						alert(`Time's up! You scored ${score} points!`);
+					}
+				}, 1000);
+			}
+			score++;
+			scoreDisplay.textContent = `Score: ${score}`;
+			dot.removeEventListener('click', incrementScore);
+		};
+		
+		dot.addEventListener('click', incrementScore);
+	</script>
+</body>
+</html>
